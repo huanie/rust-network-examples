@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      let text = null;
+      let timer = true;
+      let webSocket = new WebSocket("ws://127.0.0.1:8888")
+      webSocket.onmessage = (event) => {
+	  let newText = JSON.parse(event.data);
+	  text.value = newText["data"];
+	  if (timer) {
+	      setInterval(processInput, 2000);
+	  }
+      };      
+      function processInput() {
+	  if (webSocket.readyState === WebSocket.OPEN) {
+	      webSocket.send(JSON.stringify({
+		  data: text.value
+	      }));
+	  }
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+	  text = document.getElementById("story");
+	  text.addEventListener("input", processInput);
+      });
+      window.addEventListener('beforeunload', () => {
+          webSocket.close();
+	  return true;
+      });
+    </script>
+    <title>Collab</title>
+  </head>
+  <body>
+    <h1>Collab</h1>
+    <textarea id="story" name="story" rows="30" cols="50"></textarea>   
+  </body>
+</html>

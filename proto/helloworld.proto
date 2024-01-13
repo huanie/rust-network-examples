@@ -1,0 +1,14 @@
+syntax = "proto3";
+package helloworld;
+
+service Uppercase {
+    rpc upper (UpperRequest) returns (UpperReply);
+}
+
+message UpperRequest {
+   string original = 1;
+}
+
+message UpperReply {
+    string uppercased = 1;
+}
